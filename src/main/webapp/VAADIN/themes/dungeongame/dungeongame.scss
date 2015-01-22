@@ -1,0 +1,34 @@
+@import "../valo/valo.scss";
+
+@mixin dungeongame {
+  @include valo;
+
+  .v-app {
+  	background: black;
+  }
+  
+  .v-gridlayout {
+  	background: grey;
+  }
+  
+  .v-label-dungeoncell {
+  	width: 30px;
+  	height: 30px;
+  }
+  
+  .player {
+  	background-color: lightgreen;
+  }
+  
+  .wall {
+  	background-color: darkgrey;
+  }
+
+  .monster {
+  	background-color: red;
+  }
+
+  .floor {
+  	background-color: white;
+  }
+}
