@@ -10,7 +10,7 @@ import Implicits._
 class DungeonGameUI extends UI(title = "Dungeon Game", theme = "dungeongame") {
   content = new VerticalLayout {
     margin = true
-    
+
     val board = add(new GameBoard, ratio = 1, alignment = Alignment.TopCenter)
 
     val up = add(new Button {
@@ -46,17 +46,17 @@ class DungeonGameUI extends UI(title = "Dungeon Game", theme = "dungeongame") {
       cell + delta
     } filter board.dungeon.canMoveTo
 
-    val movesObserver = Vector(
+    val movesColl = Vector(
       up.clickEvents map { e => tryMove(Cell(0, -1)) },
       down.clickEvents map { e => tryMove(Cell(0, 1)) },
       left.clickEvents map { e => tryMove(Cell(-1, 0)) },
       right.clickEvents map { e => tryMove(Cell(1, 0)) })
 
     // Emit a Option[Cell] every time player tries to move
-    val moveObserver = Observable from movesObserver flatten
+    val moves = Observable from movesColl flatten
 
     // Map a legal destination cell to the set of visible cells after the move
-    val visibleCellsObserver = moveObserver collect {
+    val visibleCells = moves collect {
       case Some(cell) =>
         board.dungeon.playerOpt foreach { board.dungeon.put(_, cell) }
         board.dungeon.visibleIlluminatedCells
@@ -65,11 +65,11 @@ class DungeonGameUI extends UI(title = "Dungeon Game", theme = "dungeongame") {
     // Subscribe the game board instance to the stream of legal moves.
     // This will call board.onNext() with a set of visible cells whenever
     // player performs a legal move.
-    visibleCellsObserver subscribe board
+    visibleCells subscribe board
 
     // Subscribe to the illegal move stream to show a notification every
     // time player tries an illegal move.
-    moveObserver collect { case None => None } subscribe { none =>
+    moves collect { case None => None } subscribe { none =>
       Notification.show("That direction is blocked", Notification.Type.Tray)
     }
   }
@@ -83,9 +83,8 @@ class GameBoard extends GridLayout with Observer[Set[Cell]] {
     } yield Cell(x, y)).toSet
 
     entities = entities.updated(new Player, randomFreeCell)
-    entities = entities.updated(new NPC, randomFreeCell)
-    entities = entities.updated(new NPC, randomFreeCell)
-    entities = entities.updated(new NPC, randomFreeCell)
+
+    0 to 6 foreach { i => entities = entities.updated(new NPC, randomFreeCell) }
   }
 
   onNext(dungeon.visibleIlluminatedCells) // Initial draw

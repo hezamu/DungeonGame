@@ -12,16 +12,6 @@ class Dungeon {
   var floors: Set[Cell] = Set()
   var entities: Map[Entity, Cell] = Map()
 
-  def playerOpt = entities.keys collect { case p: Player => p } headOption
-
-  def playerPosition = playerOpt map entities
-
-  def playerSightRange = playerOpt map { _.sightRange } getOrElse 0
-
-  def inPlayerSightRange(cell: Cell) = playerPosition map { playerPos =>
-    MapLogic.distance(playerPos, cell) <= playerSightRange
-  } getOrElse false
-
   def visibleIlluminatedCells = {
     val lightSources = entities map {
       case (entity, cell) => (cell, entity.illuminationRadius)
@@ -31,6 +21,16 @@ class Dungeon {
 
     floors intersect visibles.toSet
   }
+
+  def playerOpt = entities.keys collect { case p: Player => p } headOption
+
+  def playerPosition = playerOpt map entities
+
+  def playerSightRange = playerOpt map { _.sightRange } getOrElse 0
+
+  def inPlayerSightRange(cell: Cell) = playerPosition map { playerPos =>
+    MapLogic.distance(playerPos, cell) <= playerSightRange
+  } getOrElse false
 
   def isOccupied(cell: Cell) = entities.values exists { _ == cell }
 
