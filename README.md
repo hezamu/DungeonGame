@@ -14,4 +14,4 @@ Eclipse project files can be created with
 
     sbt eclipse
 
-Note that you should have the [Scala IDE](http://scala-ide.org/) plugin installed.
+Note that you should have the [Scala IDE](http://scala-ide.org/) Eclipse plugin installed.
