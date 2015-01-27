@@ -7,8 +7,6 @@ case class Cell(x: Int, y: Int) {
 }
 
 class Dungeon {
-  val myFunction = (number: Int) => number * number
-
   var floors: Set[Cell] = Set()
   var entities: Map[Entity, Cell] = Map()
 
